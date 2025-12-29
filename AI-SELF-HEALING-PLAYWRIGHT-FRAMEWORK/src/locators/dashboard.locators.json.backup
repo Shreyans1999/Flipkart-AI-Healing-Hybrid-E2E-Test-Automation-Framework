@@ -1,0 +1,35 @@
+{
+    "welcomeMessage": {
+        "primary": ".flash.success",
+        "fallbacks": [
+            "#flash",
+            "[data-testid='welcome-message']",
+            "//div[contains(@class, 'flash')]"
+        ]
+    },
+    "logoutButton": {
+        "primary": "a[href='/logout']",
+        "fallbacks": [
+            "a:has-text('Logout')",
+            ".button.secondary",
+            "[data-testid='logout-button']",
+            "//a[contains(@href, 'logout')]"
+        ]
+    },
+    "secureAreaHeader": {
+        "primary": "h2",
+        "fallbacks": [
+            ".subheader",
+            "[data-testid='page-header']",
+            "//h2"
+        ]
+    },
+    "secureAreaContent": {
+        "primary": "#content",
+        "fallbacks": [
+            ".example",
+            "[data-testid='content']",
+            "//div[@id='content']"
+        ]
+    }
+}

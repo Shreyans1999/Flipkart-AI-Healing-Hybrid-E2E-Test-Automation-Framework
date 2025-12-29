@@ -1,0 +1,154 @@
+name: Playwright Tests with Self-Healing
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, firefox, webkit]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps ${{ matrix.project }}
+
+      - name: Run Playwright tests
+        run: npx playwright test --project=${{ matrix.project }}
+        env:
+          OPENAI_API_KEY: "${{ secrets.OPENAI_API_KEY }}"
+          LLM_PROVIDER: openai
+          TEST_ENV: qa
+          LOG_LEVEL: info
+          HEALING_ENABLED: true
+          AUTO_UPDATE_LOCATORS: false  # Don't auto-update in CI
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.project }}
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results-${{ matrix.project }}
+          path: reports/allure-results/
+          retention-days: 30
+
+      - name: Upload videos on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-videos-${{ matrix.project }}
+          path: test-results/
+          retention-days: 7
+
+      - name: Upload healing logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: healing-logs-${{ matrix.project }}
+          path: logs/
+          retention-days: 30
+
+  # Merge Allure reports from all browsers
+  allure-report:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all Allure results
+        uses: actions/download-artifact@v4
+        with:
+          path: allure-results
+          pattern: allure-results-*
+          merge-multiple: true
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        if: always()
+        id: allure-report
+        with:
+          allure_results: allure-results
+          allure_report: allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
+          keep_reports: 20
+
+      - name: Deploy report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-history
+
+  # Notify on healing events
+  notify:
+    needs: test
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Download healing logs
+        uses: actions/download-artifact@v4
+        with:
+          path: logs
+          pattern: healing-logs-*
+          merge-multiple: true
+
+      - name: Check for healing events
+        id: check-healing
+        run: |
+          # Count healing events across all log files (handles merged artifacts)
+          HEALING_COUNT=$(find logs -name "*.log" -type f -exec grep -h '"success":true' {} \; 2>/dev/null | wc -l || echo "0")
+          # Ensure HEALING_COUNT is a valid integer (trim whitespace)
+          HEALING_COUNT=$(echo "${HEALING_COUNT:-0}" | tr -d '[:space:]')
+          # Default to 0 if empty or non-numeric
+          if ! [[ "$HEALING_COUNT" =~ ^[0-9]+$ ]]; then
+            HEALING_COUNT=0
+          fi
+          echo "healing_count=$HEALING_COUNT" >> $GITHUB_OUTPUT
+          if [ "${HEALING_COUNT:-0}" -gt "0" ]; then
+            echo "🔧 Self-healing occurred $HEALING_COUNT times during test run"
+            echo "has_healing=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_healing=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Summary
+        run: |
+          echo "## 🧪 Test Run Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Self-Healing Events | ${{ steps.check-healing.outputs.healing_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Has Healing | ${{ steps.check-healing.outputs.has_healing }} |" >> $GITHUB_STEP_SUMMARY

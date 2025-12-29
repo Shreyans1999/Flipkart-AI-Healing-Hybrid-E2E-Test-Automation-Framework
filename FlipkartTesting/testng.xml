@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Flipkart E2E Test Suite" parallel="false">
+    
+    <!-- Configure TestListener for automatic reporting -->
+    <listeners>
+        <listener class-name="com.flipkart.core.listeners.TestListener"/>
+    </listeners>
+    
+    <!-- ==================== E2E TESTS (No Login Required) ==================== -->
+    <!-- These tests can run without manual OTP entry -->
+    
+    <test name="Site Launch Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.SiteLaunchTests"/>
+        </classes>
+    </test>
+    
+    <test name="Product Search Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.ProductSearchTests"/>
+        </classes>
+    </test>
+    
+    <test name="Product Filter Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.ProductFilterTests"/>
+        </classes>
+    </test>
+    
+    <test name="Category Browsing Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.CategoryBrowsingTests"/>
+        </classes>
+    </test>
+    
+    <test name="Flight Booking Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.FlightBookingTests"/>
+        </classes>
+    </test>
+    
+    <test name="Product Details Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.ProductDetailsTests"/>
+        </classes>
+    </test>
+    
+    <test name="Location Tests">
+        <parameter name="browser" value="chrome"/>
+        <classes>
+            <class name="com.flipkart.tests.e2e.LocationTests"/>
+        </classes>
+    </test>
+
+</suite>

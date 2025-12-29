@@ -1,0 +1,49 @@
+{
+  "name": "ai-self-healing-playwright",
+  "version": "1.0.0",
+  "description": "AI-powered Self-Healing Playwright Automation Framework",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "allure:generate": "allure generate reports/allure-results --clean -o reports/html-report",
+    "allure:open": "allure open reports/html-report",
+    "allure:report": "npm run allure:generate && npm run allure:open",
+    "lint": "eslint src/**/*.ts",
+    "build": "tsc",
+    "clean": "rimraf dist reports/allure-results reports/html-report"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "testing",
+    "ai",
+    "self-healing",
+    "e2e",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "rimraf": "^5.0.5",
+    "allure-commandline": "^2.25.0",
+    "allure-playwright": "^2.10.0"
+  },
+  "dependencies": {
+    "openai": "^4.20.0",
+    "winston": "^3.11.0",
+    "dotenv": "^16.3.1",
+    "axios": "^1.6.2"
+  }
+}
