@@ -1,0 +1,85 @@
+{
+    "productCard": {
+        "primary": "//*[@data-id]//a[@class='_1fQZEK']",
+        "fallbacks": [
+            "div._4ddWXP",
+            "//div[contains(@class,'_2kHMtA')]",
+            "[data-testid='product-card']"
+        ]
+    },
+    "productTitle": {
+        "primary": "//*[@class='_4rR01T' or @class='IRpwTa']",
+        "fallbacks": [
+            "div._4rR01T",
+            "a.IRpwTa",
+            "//div[contains(@class,'product-title')]"
+        ]
+    },
+    "productPrice": {
+        "primary": "//*[@class='_30jeq3 _1_WHN1' or @class='_30jeq3']",
+        "fallbacks": [
+            "div._30jeq3",
+            "//div[contains(@class,'price')]",
+            "[data-testid='product-price']"
+        ]
+    },
+    "filterBrand": {
+        "primary": "//div[contains(@class,'_2A7mOc')]//div[contains(text(),'Brand')]",
+        "fallbacks": [
+            "div:has-text('Brand')",
+            "//span[text()='Brand']"
+        ]
+    },
+    "filterPrice": {
+        "primary": "//div[contains(@class,'_2A7mOc')]//div[contains(text(),'Price')]",
+        "fallbacks": [
+            "div:has-text('Price')",
+            "//span[text()='Price']"
+        ]
+    },
+    "sortByDropdown": {
+        "primary": "//div[@class='_3I-nQl']",
+        "fallbacks": [
+            "div._3I-nQl",
+            "//select[contains(@class,'sort')]",
+            "[data-testid='sort-dropdown']"
+        ]
+    },
+    "sortLowToHigh": {
+        "primary": "//div[contains(text(),'Price -- Low to High')]",
+        "fallbacks": [
+            "div:has-text('Low to High')",
+            "//div[contains(text(),'Low to High')]"
+        ]
+    },
+    "sortHighToLow": {
+        "primary": "//div[contains(text(),'Price -- High to Low')]",
+        "fallbacks": [
+            "div:has-text('High to Low')",
+            "//div[contains(text(),'High to Low')]"
+        ]
+    },
+    "addToCartButton": {
+        "primary": "//button[contains(text(),'Add to cart') or contains(text(),'ADD TO CART')]",
+        "fallbacks": [
+            "button:has-text('Add to cart')",
+            "button._2KpZ6l._2U9uOA",
+            "[data-testid='add-to-cart']"
+        ]
+    },
+    "buyNowButton": {
+        "primary": "//button[contains(text(),'Buy Now') or contains(text(),'BUY NOW')]",
+        "fallbacks": [
+            "button:has-text('Buy Now')",
+            "button._2KpZ6l._2U9uOA._3v1-ww",
+            "[data-testid='buy-now']"
+        ]
+    },
+    "ratingFilter": {
+        "primary": "//div[contains(@class,'_2i7N3j')]",
+        "fallbacks": [
+            "div._2i7N3j",
+            "//div[contains(text(),'Customer Ratings')]"
+        ]
+    }
+}

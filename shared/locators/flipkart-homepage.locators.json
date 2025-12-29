@@ -1,0 +1,66 @@
+{
+    "searchBox": {
+        "primary": "//input[@name='q']",
+        "fallbacks": [
+            "input[name='q']",
+            "input[placeholder*='Search for']",
+            "//input[@title='Search for Products, Brands and More']",
+            "[data-testid='search-input']"
+        ]
+    },
+    "loginButton": {
+        "primary": "//a[contains(@href,'login')]",
+        "fallbacks": [
+            "a:has-text('Login')",
+            "//span[text()='Login']/parent::a",
+            "[data-testid='login-link']",
+            "a._1RXMaB"
+        ]
+    },
+    "searchButton": {
+        "primary": "//button[@type='submit']",
+        "fallbacks": [
+            "button[type='submit']",
+            "button:has-text('Search')",
+            "//button[@aria-label='Search']"
+        ]
+    },
+    "closePopupButton": {
+        "primary": "//button[contains(@class,'_2KpZ6l _2doB4z')]",
+        "fallbacks": [
+            "button._2KpZ6l._2doB4z",
+            "//*[@class='_30XB9F']",
+            "//span[text()='✕']/.."
+        ]
+    },
+    "categoryElectronics": {
+        "primary": "//span[text()='Electronics']",
+        "fallbacks": [
+            "a:has-text('Electronics')",
+            "//a[contains(@href,'electronics')]",
+            "[data-testid='category-electronics']"
+        ]
+    },
+    "categoryMobiles": {
+        "primary": "//span[text()='Mobiles']",
+        "fallbacks": [
+            "a:has-text('Mobiles')",
+            "//a[contains(@href,'mobiles')]"
+        ]
+    },
+    "locationPincode": {
+        "primary": "//input[@id='pincodeInputId']",
+        "fallbacks": [
+            "#pincodeInputId",
+            "input[name='pincode']",
+            "input[placeholder*='pincode']"
+        ]
+    },
+    "applyPincodeButton": {
+        "primary": "//span[text()='Apply']",
+        "fallbacks": [
+            "button:has-text('Apply')",
+            "//button[contains(text(),'Apply')]"
+        ]
+    }
+}
