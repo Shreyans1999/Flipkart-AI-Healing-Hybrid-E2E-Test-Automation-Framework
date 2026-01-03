@@ -37,6 +37,8 @@ public class LocatorConfig {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.locatorsDir = HealingConfig.getInstance().getLocatorsDir();
         this.pageLocators = new ConcurrentHashMap<>();
+        logger.info("LocatorConfig initialized with locatorsDir: " + this.locatorsDir);
+        logger.info("Current working directory: " + System.getProperty("user.dir"));
     }
 
     /**
@@ -98,20 +100,30 @@ public class LocatorConfig {
         return locators;
     }
 
-    /**
-     * Load locator file from disk
-     */
     private Map<String, LocatorEntry> loadLocatorFile(String pageName) {
         String fileName = pageName + ".locators.json";
-        Path filePath = Paths.get(locatorsDir, fileName);
 
-        if (!Files.exists(filePath)) {
-            // Try with absolute path from project root
-            filePath = Paths.get(System.getProperty("user.dir"), locatorsDir, fileName);
+        // Try multiple path resolutions
+        Path filePath = null;
+        String[] possiblePaths = {
+                locatorsDir + "/" + fileName,
+                System.getProperty("user.dir") + "/" + locatorsDir + "/" + fileName,
+                System.getProperty("user.dir") + "/../shared/locators/" + fileName,
+                "../shared/locators/" + fileName
+        };
+
+        for (String pathStr : possiblePaths) {
+            Path testPath = Paths.get(pathStr).toAbsolutePath().normalize();
+            logger.info("Trying locator path: " + testPath);
+            if (Files.exists(testPath)) {
+                filePath = testPath;
+                logger.info("✅ Found locator file at: " + filePath);
+                break;
+            }
         }
 
-        if (!Files.exists(filePath)) {
-            logger.debug("Locator file not found: " + filePath);
+        if (filePath == null || !Files.exists(filePath)) {
+            logger.error("❌ Locator file not found for page: " + pageName);
             return null;
         }
 
@@ -119,7 +131,7 @@ public class LocatorConfig {
             Type type = new TypeToken<Map<String, LocatorEntry>>() {
             }.getType();
             Map<String, LocatorEntry> locators = gson.fromJson(reader, type);
-            logger.debug("Loaded locators for page: " + pageName + " (" + locators.size() + " elements)");
+            logger.info("Loaded locators for page: " + pageName + " (" + locators.size() + " elements)");
             return locators;
         } catch (IOException e) {
             logger.error("Error reading locator file: " + filePath, e);

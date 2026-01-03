@@ -1,4 +1,4 @@
-# AI Self-Healing Test Scenario: Flipkart Login Button
+# AI Self-Healing Test Scenario: Flipkart Search Button
 
 This document demonstrates how to intentionally break a locator and observe the AI self-healing process in action.
 
@@ -7,20 +7,20 @@ This document demonstrates how to intentionally break a locator and observe the 
 ## Scenario Overview
 
 We will:
-1. Set a **broken selector** for the login button
+1. Set a **broken selector** for the search button
 2. Run a test that tries to click it
 3. Watch the healing engine recover automatically
 
 ---
 
-## Step 1: Break the Login Button Locator
+## Step 1: Break the Search Button Locator
 
 Edit `shared/locators/flipkart-homepage.locators.json`:
 
 ```json
 {
-  "loginButton": {
-    "primary": "#completely-broken-selector-that-will-fail",
+  "searchButton": {
+    "primary": "#completely-broken-search-selector",
     "fallbacks": [
       "#also-broken-1",
       "#also-broken-2",
@@ -36,7 +36,7 @@ The primary and all fallbacks are intentionally broken to trigger AI healing.
 
 ## Step 2: Create Test Page Object
 
-Create `FlipkartSelfHealingDemo.java`:
+Create `FlipkartSelfHealingDemo.java` in `src/main/java/com/flipkart/pages/`:
 
 ```java
 package com.flipkart.pages;
@@ -54,10 +54,12 @@ public class FlipkartSelfHealingDemo extends SelfHealingBasePage {
         super(driver);
     }
     
-    public void clickLoginButton() {
-        // This will fail with broken selector
-        // Then trigger AI healing
-        smartClick("loginButton");
+    public void searchForProduct(String query) {
+        // Type in search box
+        smartType("searchBox", query);
+        
+        // This will fail with broken selector, then trigger AI healing
+        smartClick("searchButton");
     }
 }
 ```
@@ -66,7 +68,7 @@ public class FlipkartSelfHealingDemo extends SelfHealingBasePage {
 
 ## Step 3: Create Demo Test
 
-Create `SelfHealingDemoTest.java`:
+Create `SelfHealingDemoTest.java` in `src/test/java/com/flipkart/tests/e2e/`:
 
 ```java
 package com.flipkart.tests.e2e;
@@ -77,8 +79,8 @@ import com.flipkart.tests.base.BaseTest;
 
 public class SelfHealingDemoTest extends BaseTest {
     
-    @Test(description = "Demo: Watch AI heal a broken login button selector")
-    public void testLoginButtonHealing() {
+    @Test(description = "Demo: Watch AI heal a broken search button selector")
+    public void testSearchButtonHealing() {
         // Navigate to Flipkart
         navigateToBaseUrl();
         
@@ -89,16 +91,16 @@ public class SelfHealingDemoTest extends BaseTest {
         page.closeLoginPopupIfPresent();
         
         // This will:
-        // 1. Try "#completely-broken-selector-that-will-fail" -> FAIL
+        // 1. Try "#completely-broken-search-selector" -> FAIL
         // 2. Try fallbacks -> ALL FAIL
         // 3. Capture DOM snapshot
         // 4. Call AI healing API
-        // 5. LLM generates: "a:has-text('Login')" or similar
+        // 5. LLM generates: "button[type='submit']" or similar
         // 6. Validate and use healed selector
         // 7. Click succeeds!
-        page.clickLoginButton();
+        page.searchForProduct("iPhone 15");
         
-        logger.info("✅ Login button clicked successfully with healed selector!");
+        logger.info("✅ Search executed with healed selector!");
     }
 }
 ```
@@ -126,6 +128,8 @@ cd FlipkartTesting
 mvn test -Dtest=SelfHealingDemoTest
 ```
 
+Or in Eclipse: Right-click `SelfHealingDemoTest.java` → Run As → TestNG Test
+
 ---
 
 ## Expected Console Output
@@ -133,8 +137,8 @@ mvn test -Dtest=SelfHealingDemoTest
 Watch for these healing logs:
 
 ```
-🔧 Requesting AI healing for: loginButton
-   failedSelector: #completely-broken-selector-that-will-fail
+🔧 Requesting AI healing for: searchButton
+   failedSelector: #completely-broken-search-selector
 
 Trying 3 fallback selectors
    #also-broken-1 -> FAILED
@@ -144,15 +148,15 @@ Trying 3 fallback selectors
 Fallbacks failed, querying LLM...
 
 LLM returned 4 selectors:
-   1. a:has-text('Login')
-   2. //a[contains(@href,'login')]
-   3. span:has-text('Login')
-   4. [data-testid='login-link']
+   1. button[type='submit']
+   2. //button[@type='submit']
+   3. button:has-text('Search')
+   4. //button[@aria-label='Search']
 
-✅ LLM selector validated: //a[contains(@href,'login')]
+✅ LLM selector validated: button[type='submit']
    Confidence: 0.85
 
-Locator file updated: flipkart-homepage.loginButton -> //a[contains(@href,'login')]
+Locator file updated: flipkart-homepage.searchButton -> button[type='submit']
 
 ✅ Healing successful!
 ```
@@ -165,36 +169,26 @@ After the test, check `shared/locators/flipkart-homepage.locators.json`:
 
 ```json
 {
-  "loginButton": {
-    "primary": "//a[contains(@href,'login')]",
+  "searchButton": {
+    "primary": "button[type='submit']",
     "fallbacks": [
-      "#completely-broken-selector-that-will-fail",
+      "#completely-broken-search-selector",
       "#also-broken-1",
       "#also-broken-2"
     ],
-    "lastHealed": "2025-12-29T19:50:00.000Z",
+    "lastHealed": "2025-12-29T20:46:00.000Z",
     "healCount": 1
   }
 }
 ```
 
-The healed selector is now the primary, and the old broken one moved to fallbacks!
-
----
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| "Healing service not available" | Run `npm run server` first |
-| "LLM returned no selectors" | Check your API key in `.env` |
-| "No valid selector found" | The LLM couldn't find the element |
+The healed selector is now the primary!
 
 ---
 
 ## LLM Configuration
 
-For this demo to work, configure one of these in `.env`:
+Configure in `AI-SELF-HEALING-PLAYWRIGHT-FRAMEWORK/.env`:
 
 **Option A: Ollama (Free, Local)**
 ```env
@@ -211,13 +205,12 @@ OPENAI_API_KEY=sk-your-key-here
 
 ---
 
-## Quick Test Commands
+## Quick Commands
 
 ```bash
-# Start everything
-cd AI-SELF-HEALING-PLAYWRIGHT-FRAMEWORK && npm run server &
-cd FlipkartTesting && mvn test -Dtest=SelfHealingDemoTest
+# Start healing server
+cd AI-SELF-HEALING-PLAYWRIGHT-FRAMEWORK && npm run server
 
-# Check healing logs
-tail -f AI-SELF-HEALING-PLAYWRIGHT-FRAMEWORK/logs/healing.log
+# Run demo test
+cd FlipkartTesting && mvn test -Dtest=SelfHealingDemoTest
 ```

@@ -1,66 +1,76 @@
 {
-    "searchBox": {
-        "primary": "//input[@name='q']",
-        "fallbacks": [
-            "input[name='q']",
-            "input[placeholder*='Search for']",
-            "//input[@title='Search for Products, Brands and More']",
-            "[data-testid='search-input']"
-        ]
-    },
-    "loginButton": {
-        "primary": "//a[contains(@href,'login')]",
-        "fallbacks": [
-            "a:has-text('Login')",
-            "//span[text()='Login']/parent::a",
-            "[data-testid='login-link']",
-            "a._1RXMaB"
-        ]
-    },
-    "searchButton": {
-        "primary": "//button[@type='submit']",
-        "fallbacks": [
-            "button[type='submit']",
-            "button:has-text('Search')",
-            "//button[@aria-label='Search']"
-        ]
-    },
-    "closePopupButton": {
-        "primary": "//button[contains(@class,'_2KpZ6l _2doB4z')]",
-        "fallbacks": [
-            "button._2KpZ6l._2doB4z",
-            "//*[@class='_30XB9F']",
-            "//span[text()='✕']/.."
-        ]
-    },
-    "categoryElectronics": {
-        "primary": "//span[text()='Electronics']",
-        "fallbacks": [
-            "a:has-text('Electronics')",
-            "//a[contains(@href,'electronics')]",
-            "[data-testid='category-electronics']"
-        ]
-    },
-    "categoryMobiles": {
-        "primary": "//span[text()='Mobiles']",
-        "fallbacks": [
-            "a:has-text('Mobiles')",
-            "//a[contains(@href,'mobiles')]"
-        ]
-    },
-    "locationPincode": {
-        "primary": "//input[@id='pincodeInputId']",
-        "fallbacks": [
-            "#pincodeInputId",
-            "input[name='pincode']",
-            "input[placeholder*='pincode']"
-        ]
-    },
-    "applyPincodeButton": {
-        "primary": "//span[text()='Apply']",
-        "fallbacks": [
-            "button:has-text('Apply')",
-            "//button[contains(text(),'Apply')]"
-        ]
-    }
+  "searchBox": {
+    "primary": "//input[@name\u003d\u0027q\u0027]",
+    "fallbacks": [
+      "input[name\u003d\u0027q\u0027]",
+      "input[placeholder*\u003d\u0027Search for\u0027]",
+      "//input[@title\u003d\u0027Search for Products, Brands and More\u0027]",
+      "[data-testid\u003d\u0027search-input\u0027]"
+    ],
+    "healCount": 0
+  },
+  "loginButton": {
+    "primary": "//a[contains(@href,\u0027login\u0027)]",
+    "fallbacks": [
+      "a:has-text(\u0027Login\u0027)",
+      "//span[text()\u003d\u0027Login\u0027]/parent::a",
+      "[data-testid\u003d\u0027login-link\u0027]",
+      "a._1RXMaB"
+    ],
+    "healCount": 0
+  },
+  "searchButton": {
+    "primary": "button[type\u003d\u0027submit\u0027]",
+    "fallbacks": [
+      "#completely-broken-search-selector",
+      "#also-broken-1",
+      "#also-broken-2",
+      "#also-broken-3"
+    ],
+    "lastHealed": "2025-12-29T16:03:16.483974Z",
+    "healCount": 1
+  },
+  "closePopupButton": {
+    "primary": "//button[contains(@class,\u0027_2KpZ6l _2doB4z\u0027)]",
+    "fallbacks": [
+      "button._2KpZ6l._2doB4z",
+      "//*[@class\u003d\u0027_30XB9F\u0027]",
+      "//span[text()\u003d\u0027✕\u0027]/.."
+    ],
+    "healCount": 0
+  },
+  "categoryElectronics": {
+    "primary": "//span[text()\u003d\u0027Electronics\u0027]",
+    "fallbacks": [
+      "a:has-text(\u0027Electronics\u0027)",
+      "//a[contains(@href,\u0027electronics\u0027)]",
+      "[data-testid\u003d\u0027category-electronics\u0027]"
+    ],
+    "healCount": 0
+  },
+  "categoryMobiles": {
+    "primary": "//span[text()\u003d\u0027Mobiles\u0027]",
+    "fallbacks": [
+      "a:has-text(\u0027Mobiles\u0027)",
+      "//a[contains(@href,\u0027mobiles\u0027)]"
+    ],
+    "healCount": 0
+  },
+  "locationPincode": {
+    "primary": "//input[@id\u003d\u0027pincodeInputId\u0027]",
+    "fallbacks": [
+      "#pincodeInputId",
+      "input[name\u003d\u0027pincode\u0027]",
+      "input[placeholder*\u003d\u0027pincode\u0027]"
+    ],
+    "healCount": 0
+  },
+  "applyPincodeButton": {
+    "primary": "//span[text()\u003d\u0027Apply\u0027]",
+    "fallbacks": [
+      "button:has-text(\u0027Apply\u0027)",
+      "//button[contains(text(),\u0027Apply\u0027)]"
+    ],
+    "healCount": 0
+  }
 }

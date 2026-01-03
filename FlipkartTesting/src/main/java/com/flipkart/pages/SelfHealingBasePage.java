@@ -56,6 +56,8 @@ public abstract class SelfHealingBasePage extends BasePage {
         this.healingClient = HealingServiceClient.getInstance();
         this.locatorConfig = LocatorConfig.getInstance();
         this.healingConfig = HealingConfig.getInstance();
+        logger.info("SelfHealingBasePage initialized - healing enabled: " + healingConfig.isEnabled());
+        logger.info("Healing service URL: " + healingConfig.getServiceUrl());
     }
 
     // ==================== SMART ELEMENT METHODS ====================
@@ -171,10 +173,16 @@ public abstract class SelfHealingBasePage extends BasePage {
         }
 
         // All selectors failed - request AI healing if enabled
+        logger.info("All selectors failed. Checking healing availability...");
+        logger.info("Healing enabled: " + healingConfig.isEnabled());
+        logger.info("Healing client available: " + healingClient.isHealingAvailable());
+
         if (healingConfig.isEnabled() && healingClient.isHealingAvailable()) {
             logger.info("🔧 Requesting AI healing for: " + elementKey);
 
             HealingResult result = requestHealing(elementKey, primarySelector, fallbacks, action);
+            logger.info("Healing result: success=" + result.isSuccess() + ", selector=" + result.getHealedSelector()
+                    + ", error=" + result.getError());
 
             if (result.isSuccess() && result.getHealedSelector() != null) {
                 element = tryFindElement(result.getHealedSelector());
@@ -186,6 +194,9 @@ public abstract class SelfHealingBasePage extends BasePage {
             } else {
                 logger.error("❌ AI healing failed: " + result.getError());
             }
+        } else {
+            logger.error("❌ Healing not available - enabled: " + healingConfig.isEnabled() + ", available: "
+                    + healingClient.isHealingAvailable());
         }
 
         throw new NoSuchElementException("Could not find element: " + getPageName() + "." + elementKey +
